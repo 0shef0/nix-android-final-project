@@ -1,4 +1,9 @@
-package com.nix.summer.myapp
+package com.nix.summer.myapp.core.model
+
+import com.nix.summer.myapp.core.entity.Drink
+import com.nix.summer.myapp.core.entity.Request
+import com.nix.summer.myapp.core.entity.Resources
+import com.nix.summer.myapp.core.entity.Response
 
 class Model {
 
