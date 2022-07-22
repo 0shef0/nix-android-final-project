@@ -1,6 +1,6 @@
 package com.nix.summer.myapp.core.entity
 
-data class Resources(var water: Int,
-                     var milk: Int,
-                     var coffeeBeans: Int,
-                     var disposableCups: Int)
+data class Resources(val water: Int,
+                     val milk: Int,
+                     val coffeeBeans: Int,
+                     val disposableCups: Int)
