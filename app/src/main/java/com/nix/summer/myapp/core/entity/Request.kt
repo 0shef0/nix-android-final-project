@@ -1,3 +1,3 @@
 package com.nix.summer.myapp.core.entity
 
-data class Request(var command: String)
+data class Request(val command: String)

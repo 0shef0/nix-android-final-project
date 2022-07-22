@@ -1,4 +1,4 @@
-package com.nix.summer.myapp.adapters
+package com.nix.summer.myapp.ui.adapters
 
 import com.nix.summer.myapp.core.entity.Response
 
