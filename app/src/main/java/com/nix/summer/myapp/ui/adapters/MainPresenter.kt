@@ -1,17 +1,15 @@
 package com.nix.summer.myapp.ui.adapters
 
 import com.nix.summer.myapp.core.entity.*
-import com.nix.summer.myapp.core.interactors.BuyInteractor
-import com.nix.summer.myapp.core.interactors.ExchangeCurrencyInteractor
-import com.nix.summer.myapp.core.interactors.FillResourcesInteractor
-import com.nix.summer.myapp.core.interactors.TakeMoneyInteractor
+import com.nix.summer.myapp.core.interactors.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class MainPresenter(private val buyInteractor: BuyInteractor,
                     private val takeMoneyInteractor: TakeMoneyInteractor,
                     private val fillResourcesInteractor: FillResourcesInteractor,
-                    private val exchangeCurrencyInteractor: ExchangeCurrencyInteractor
+                    private val exchangeCurrencyInteractor: ExchangeCurrencyInteractor,
+                    private val loadPaymentInteractor: LoadPaymentInteractor
                     ): Contract.Presenter, CoroutineScope {
 
     private var view: Contract.View? = null
@@ -32,7 +30,7 @@ class MainPresenter(private val buyInteractor: BuyInteractor,
             view?.showInfo(response)
         } else {
             view?.showInfo(response)
-            exchangePayment(Payment(drink.currency, drink.cost, money))
+            exchangePayment(Payment(0, drink.currency, drink.cost, money))
         }
     }
 
@@ -56,6 +54,15 @@ class MainPresenter(private val buyInteractor: BuyInteractor,
     fun exchangePayment(payment: Payment) {
         launch {
             val response = exchangeCurrencyInteractor(payment)
+            withContext(Dispatchers.Main) {
+                view?.showPayment(response)
+            }
+        }
+    }
+
+    fun loadPayment() {
+        launch {
+            val response = loadPaymentInteractor()
             withContext(Dispatchers.Main) {
                 view?.showPayment(response)
             }

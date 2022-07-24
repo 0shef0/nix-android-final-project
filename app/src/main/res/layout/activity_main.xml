@@ -15,6 +15,17 @@
         tools:layout_editor_absoluteY="16dp">
 
 
+        <Button
+            android:id="@+id/LoadButton"
+            android:layout_width="148dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="32dp"
+            android:onClick="loadPayment"
+            android:text="Load"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cupsInput" />
+
         <TextView
             android:id="@+id/paymentMessage"
             android:layout_width="172dp"
@@ -186,11 +197,11 @@
             android:id="@+id/fillButton"
             android:layout_width="148dp"
             android:layout_height="48dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="132dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="28dp"
             android:onClick="fillMachine"
             android:text="fill"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cupsInput" />
 
         <androidx.appcompat.widget.SwitchCompat
