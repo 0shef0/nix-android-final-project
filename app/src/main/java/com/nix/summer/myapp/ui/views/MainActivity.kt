@@ -15,11 +15,11 @@ import com.nix.summer.myapp.ui.adapters.MainPresenter
 import com.nix.summer.myapp.core.entity.Resources
 import com.nix.summer.myapp.core.entity.Request
 import com.nix.summer.myapp.core.entity.Response
-import com.nix.summer.myapp.core.interactors.BuyInteractor
-import com.nix.summer.myapp.core.interactors.ExchangeCurrencyInteractor
-import com.nix.summer.myapp.core.interactors.FillResourcesInteractor
-import com.nix.summer.myapp.core.interactors.TakeMoneyInteractor
+import com.nix.summer.myapp.core.interactors.*
+import com.nix.summer.myapp.data.database.Database
+import com.nix.summer.myapp.data.mappers.DatabasePaymentToPaymentMapper
 import com.nix.summer.myapp.data.mappers.NetworkPaymentToPaymentMapper
+import com.nix.summer.myapp.data.mappers.PaymentToDatabasePaymentMapper
 import com.nix.summer.myapp.data.network.ExchangeServiceAPI
 import com.nix.summer.myapp.data.network.Network
 import com.nix.summer.myapp.data.repositories.FakeRepository
@@ -39,14 +39,18 @@ class MainActivity : AppCompatActivity(), Contract.View {
     private val presenter by lazy {
         val repository = PaymentRepositoryImplementation(
             Network.api,
-            NetworkPaymentToPaymentMapper()
+            NetworkPaymentToPaymentMapper(),
+            Database.provideDao(baseContext),
+            DatabasePaymentToPaymentMapper(),
+            PaymentToDatabasePaymentMapper()
         )
 
         MainPresenter(
             BuyInteractor(FakeRepository()),
             TakeMoneyInteractor(FakeRepository()),
             FillResourcesInteractor(FakeRepository()),
-            ExchangeCurrencyInteractor(repository)
+            ExchangeCurrencyInteractor(repository),
+            LoadPaymentInteractor(repository)
         )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +100,10 @@ class MainActivity : AppCompatActivity(), Contract.View {
                                                                     coffeeBeansInput.text.toString().toInt(),
                                                                     disposableCupsInput.text.toString().toInt())
         )
+    }
+
+    fun loadPayment(view: View) {
+        presenter.loadPayment()
     }
 
     override fun showPayment(response: Response) {
