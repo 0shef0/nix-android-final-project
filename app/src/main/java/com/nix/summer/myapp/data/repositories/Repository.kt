@@ -11,4 +11,6 @@ interface Repository {
     fun take(): Response
 
     fun fill(resources: Resources): Response
+
+    fun getResourses(): Response
 }

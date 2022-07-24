@@ -11,7 +11,7 @@ class FakeRepository: Repository {
         var milk: Int = 540
         var coffeeBeans: Int = 120
         var disposableCups: Int = 9
-        var money: Int = 550
+        var money: Float = 550f
     }
 
     override fun buy(drink: Drink): Response {
@@ -44,7 +44,7 @@ class FakeRepository: Repository {
     override fun take(): Response {
         val info = Response("I've gave you ${CoffeeMachine.money}",
             Resources(CoffeeMachine.water, CoffeeMachine.milk, CoffeeMachine.coffeeBeans, CoffeeMachine.disposableCups))
-        CoffeeMachine.money = 0
+        CoffeeMachine.money = 0f
         return info
     }
 
@@ -55,5 +55,12 @@ class FakeRepository: Repository {
         CoffeeMachine.disposableCups += resources.disposableCups
         return Response("Filled",
             Resources(CoffeeMachine.water, CoffeeMachine.milk, CoffeeMachine.coffeeBeans, CoffeeMachine.disposableCups))
+    }
+
+    override fun getResourses(): Response {
+        return Response("Returned resources", Resources(CoffeeMachine.water,
+                                                                        CoffeeMachine.milk,
+                                                                        CoffeeMachine.coffeeBeans,
+                                                                        CoffeeMachine.disposableCups))
     }
 }

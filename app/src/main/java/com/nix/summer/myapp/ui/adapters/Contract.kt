@@ -5,6 +5,8 @@ import com.nix.summer.myapp.core.entity.Response
 interface Contract {
 
     interface View {
+        fun showPayment(response: Response)
+
         fun showInfo(response: Response)
     }
 

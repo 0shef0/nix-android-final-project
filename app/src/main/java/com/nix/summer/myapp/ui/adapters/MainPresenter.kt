@@ -1,18 +1,23 @@
 package com.nix.summer.myapp.ui.adapters
 
-import com.nix.summer.myapp.core.entity.Drink
-import com.nix.summer.myapp.core.entity.Request
-import com.nix.summer.myapp.core.entity.Resources
+import com.nix.summer.myapp.core.entity.*
 import com.nix.summer.myapp.core.interactors.BuyInteractor
+import com.nix.summer.myapp.core.interactors.ExchangeCurrencyInteractor
 import com.nix.summer.myapp.core.interactors.FillResourcesInteractor
 import com.nix.summer.myapp.core.interactors.TakeMoneyInteractor
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 class MainPresenter(private val buyInteractor: BuyInteractor,
                     private val takeMoneyInteractor: TakeMoneyInteractor,
-                    private val fillResourcesInteractor: FillResourcesInteractor
-                    ): Contract.Presenter {
+                    private val fillResourcesInteractor: FillResourcesInteractor,
+                    private val exchangeCurrencyInteractor: ExchangeCurrencyInteractor
+                    ): Contract.Presenter, CoroutineScope {
 
     private var view: Contract.View? = null
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = job + Dispatchers.Default
 
     override fun attach(view: Contract.View) {
         this.view = view
@@ -22,16 +27,37 @@ class MainPresenter(private val buyInteractor: BuyInteractor,
         this.view = null
     }
 
-    fun buyChoice(command: Int) {
+    private fun checkResponse(response: Response, drink: Drink, money: String){
+        if (response.responseMessage != "I have enough resources, making you a coffee!") {
+            view?.showInfo(response)
+        } else {
+            view?.showInfo(response)
+            exchangePayment(Payment(drink.currency, drink.cost, money))
+        }
+    }
+
+    fun buyChoice(command: Int, money: String) {
         when(command) {
             1 -> {
-                view?.showInfo(buyInteractor(Drink.ESPRESSO))
+                val response = buyInteractor(Drink.ESPRESSO)
+                checkResponse(response, Drink.ESPRESSO, money)
             }
             2 -> {
-                view?.showInfo(buyInteractor(Drink.LATTE))
+                val response = buyInteractor(Drink.LATTE)
+                checkResponse(response, Drink.LATTE, money)
             }
             3 -> {
-                view?.showInfo(buyInteractor(Drink.CAPPUCCINO))
+                val response = buyInteractor(Drink.CAPPUCCINO)
+                checkResponse(response, Drink.CAPPUCCINO, money)
+            }
+        }
+    }
+
+    fun exchangePayment(payment: Payment) {
+        launch {
+            val response = exchangeCurrencyInteractor(payment)
+            withContext(Dispatchers.Main) {
+                view?.showPayment(response)
             }
         }
     }
